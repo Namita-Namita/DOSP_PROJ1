@@ -51,3 +51,9 @@ generate_hashcode(String) ->
     Hash8bit = crypto:hash(sha256, String),
     Hash_int = crypto:bytes_to_integer(Hash8bit),
     _Final_Hash = integer_to_list(Hash_int, 16).
+% func to concatenate zeros infront of hashcode of the mined bitcoins.
+concat_zeros(String, 0) ->
+    _Final_hash = concat("", String);
+concat_zeros(String, Number_of_zeros) ->
+    Final_hash = concat("0", String),
+    concat_zeros(Final_hash, Number_of_zeros - 1).
