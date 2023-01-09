@@ -57,3 +57,22 @@ concat_zeros(String, 0) ->
 concat_zeros(String, Number_of_zeros) ->
     Final_hash = concat("0", String),
     concat_zeros(Final_hash, Number_of_zeros - 1).
+
+% actor func to mine bitcoin until it gets a coin with input number of leading zeros
+% sends back the mined coin to boss actor.
+bitcoin_mining_worker(_From, _Number_of_zeros, 0) ->
+    io:fwrite("");
+bitcoin_mining_worker(From, Number_of_zeros, Number_of_coins) ->
+    String = gen_rnd(6, "abcdefghijklmnopqrstuvwxyz1234567890"),
+    Bitcoin_to_be_hashed = concat("namitanamita;", String),
+    Final_hash = generate_hashcode(Bitcoin_to_be_hashed),
+    Len1 = 64 - Number_of_zeros,
+    Len2 = string:length(Final_hash),
+    if Len1 >= Len2 ->
+        Len3 = 64 - Len2,
+           Final_hash_with_zeros = concat_zeros(Final_hash, Len3),
+           From ! {[Bitcoin_to_be_hashed, Final_hash_with_zeros]},
+           bitcoin_mining_worker(From, Number_of_zeros, Number_of_coins - 1);
+       true ->
+           bitcoin_mining_worker(From, Number_of_zeros, Number_of_coins)
+    end.
