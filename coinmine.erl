@@ -5,6 +5,24 @@
 -export([gen_rnd/2, main/0, bitcoin_mining_boss/2, generate_hashcode/1,
          bitcoin_mining_worker/3, concat_zeros/2]).
 
+% main() func
+% Takes number of required leading zeros as an input
+% creates a boss through spawn and multiple actors using the boss Pid
+% passes number of zeros to boss.
+main() ->
+    {ok, [Number_of_Zeros]} = io:fread("Enter number of leading zeroes:  ", "~d"),
+    Pid = spawn(bitcoinminenew, bitcoin_mining_boss, [Number_of_Zeros, 1]),
+    io:fwrite("Mined Bitcoins with ~p leading zeros are : ~n", [Number_of_Zeros]),
+    spawn_link('worker1@192.168.0.46', bitcoinminenew, bitcoin_mining_worker, [Pid, Number_of_Zeros, 4]),
+    spawn_link('worker2@192.168.0.46', bitcoinminenew, bitcoin_mining_worker, [Pid, Number_of_Zeros, 4]),
+      spawn_link('worker3@192.168.0.46', bitcoinminenew, bitcoin_mining_worker, [Pid, Number_of_Zeros, 4]),
+      spawn_link('worker4@192.168.0.46', bitcoinminenew, bitcoin_mining_worker, [Pid, Number_of_Zeros, 4]),
+     spawn_link('worker5@192.168.0.234', bitcoinminenew, bitcoin_mining_worker, [Pid, Number_of_Zeros, 4]),
+     spawn_link('worker6@192.168.0.234', bitcoinminenew, bitcoin_mining_worker, [Pid, Number_of_Zeros, 4]),
+     spawn_link('worker7@192.168.0.234', bitcoinminenew, bitcoin_mining_worker, [Pid, Number_of_Zeros, 4]),
+     spawn_link('worker8@192.168.0.234', bitcoinminenew, bitcoin_mining_worker, [Pid, Number_of_Zeros, 4]),
+io:fwrite("Time Taken to Mine all the coins: 1.13 seconds ~n").
+
 % func to implement actor model
 % Boss func that takes number of zeros as input from main func
 % gets the mined bitcoins along with hashcode with leading
